@@ -1,7 +1,6 @@
 import * as SQLite from "expo-sqlite";
-import { useDispatch } from "react-redux";
 import { addLists } from "@/reducers/listReducer";
-//const dispatch = useDispatch();
+import { Action, Dispatch } from "@reduxjs/toolkit";
 
 export const initialiseDb = async () => {
   try {
@@ -36,13 +35,12 @@ export const insertListData = async (
       useNewConnection: true,
     });
 
-    const insert = await db.withTransactionAsync(async () => {
-      const res = await db.runAsync(
-        "INSERT INTO lists (name, category, notes, timestamp, quantity) VALUES (?, ?, ?, ?, ?)",
-        [name, category, notes, timestamp, quantity]
-      );
-      console.log({ res });
-    });
+    const res = await db.runAsync(
+      "INSERT INTO lists (name, category, notes, timestamp, quantity) VALUES (?, ?, ?, ?, ?)",
+      [name, category, notes, timestamp, quantity]
+    );
+    console.log({ res });
+    return res;
   } catch (error) {
     console.log(error);
   }
@@ -81,7 +79,7 @@ export const readList = async (id: number) => {
     console.log(error);
   }
 };
-export const readLists = async () => {
+export const readLists = async (dispatch: Dispatch<Action<string>>) => {
   try {
     const db = await SQLite.openDatabaseAsync("listAppDb", {
       useNewConnection: true,
@@ -89,7 +87,8 @@ export const readLists = async () => {
 
     const res = await db.getAllAsync("SELECT * FROM lists");
     console.log({ res });
-    //dispatch(addLists(res));
+
+    dispatch(addLists(res));
   } catch (error) {
     console.log(error);
   }

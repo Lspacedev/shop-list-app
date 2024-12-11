@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "expo-router";
-import { View, Text, Dimensions, StyleSheet } from "react-native";
+import { Link, router } from "expo-router";
+import { View, Text, Dimensions, StyleSheet, Pressable } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
 type ListType = {
@@ -17,12 +17,16 @@ type ListProps = {
 };
 
 const ListCard: React.FC<ListProps> = ({ list }) => {
+  const goToList = () => {
+    router.push({
+      pathname: "../list/[list]",
+      params: { list: list.id },
+    });
+  };
   return (
-    <Link
-      href={{
-        pathname: "/list/[list]",
-        params: { list: list.id },
-      }}
+    <Pressable
+      style={{ flex: 1, justifyContent: "center", marginHorizontal: 25 }}
+      onPress={goToList}
     >
       <View style={styles.container}>
         <View style={styles.name}>
@@ -35,7 +39,7 @@ const ListCard: React.FC<ListProps> = ({ list }) => {
           <Text style={{ color: "#121b27" }}>{list.quantity}</Text>
         </View>
       </View>
-    </Link>
+    </Pressable>
   );
 };
 export default ListCard;
@@ -43,27 +47,13 @@ export default ListCard;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: (Dimensions.get("window").width - 60) / 2,
-    height: 200,
-    borderRadius: 25,
-    marginTop: 15,
-  },
-  name: {
-    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
     alignItems: "center",
-    justifyContent: "flex-end",
-    fontWeight: 600,
+    height: 50,
+    backgroundColor: "yellow",
   },
-  category: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-end",
-    fontWeight: 600,
-  },
-  quantity: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-end",
-    fontWeight: 600,
-  },
+  name: {},
+  category: {},
+  quantity: {},
 });

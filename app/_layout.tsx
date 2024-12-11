@@ -8,6 +8,7 @@ export default function TabLayout() {
     <Provider store={store}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="list/[list]" options={{ headerShown: true }} />
       </Stack>
     </Provider>
   );
