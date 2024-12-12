@@ -5,14 +5,33 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveBackgroundColor: "black",
-        tabBarInactiveBackgroundColor: "#333333",
+        tabBarActiveBackgroundColor: "#1D1E2C",
+        tabBarInactiveBackgroundColor: "#1D1E2C",
+        tabBarActiveTintColor: "whitesmoke",
+        tabBarStyle: {
+          borderTopWidth: 0.3,
+          borderTopColor: "black",
+          elevation: 1,
+          shadowColor: "#5bc4ff",
+          shadowOpacity: 1,
+          shadowOffset: {
+            height: 1,
+            width: 1,
+          },
+          shadowRadius: 1,
+        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          tabBarLabel: "",
+          headerTitle: "ShoppingList",
+          headerTintColor: "#B7B5B3",
+
+          headerStyle: {
+            backgroundColor: "#1D1E2C",
+          },
+          tabBarLabel: "Lists",
           tabBarIcon: ({ color }) => {
             return <FontAwesome5 name="list-alt" size={24} color="white" />;
           },
@@ -24,10 +43,13 @@ export default function TabLayout() {
         options={{
           headerTitle: "Search",
           headerStyle: {},
-          tabBarLabel: "",
+          tabBarLabel: "Search",
 
           tabBarIcon: ({ color }) => {
-            return <Feather name="search" size={24} color="search" />;
+            return <Feather name="search" size={24} color="white" />;
+          },
+          tabBarStyle: {
+            borderTopColor: "black",
           },
         }}
       />

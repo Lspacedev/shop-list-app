@@ -16,7 +16,7 @@ const FAB: React.FC<Props> = ({ urlText }) => {
         borderRadius: 25,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#C0D461",
+        backgroundColor: "#F97068",
         position: "absolute",
         bottom: 30,
         right: 30,

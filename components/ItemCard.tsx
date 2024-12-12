@@ -4,6 +4,8 @@ import { View, Text, Dimensions, StyleSheet, Pressable } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import EvilIcons from "@expo/vector-icons/EvilIcons";
+import { deleteItem } from "@/db/db";
 type ItemType = {
   id: number;
   name: string;
@@ -38,6 +40,10 @@ const ItemCard: React.FC<ItemProps> = ({
       pathname: "../[item]/updateItem",
       params: { item: item.id },
     });
+  };
+  const removeItem = async () => {
+    await deleteItem(item.id);
+    router.back();
   };
   return (
     <Pressable
@@ -84,8 +90,25 @@ const ItemCard: React.FC<ItemProps> = ({
           {item.price}
         </Text>
       </View>
-      <Pressable onPress={goToUpdate} style={{ flex: 1 }}>
-        <MaterialIcons name="edit" size={24} color="black" />
+
+      <Pressable
+        onPress={isPressed ? () => removeItem() : () => goToUpdate()}
+        style={{ flex: 1 }}
+      >
+        {isPressed ? (
+          <EvilIcons
+            name="close"
+            size={24}
+            color="black"
+            style={{
+              padding: 0,
+              margin: 10,
+              textAlign: "right",
+            }}
+          />
+        ) : (
+          <MaterialIcons name="edit" size={24} color="black" />
+        )}
       </Pressable>
     </Pressable>
   );

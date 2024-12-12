@@ -46,10 +46,10 @@ export const insertListData = async (
   }
 };
 export const updateList = async (
-  name: string,
-  category: string,
-  notes: string,
-  quantity: number,
+  name: null | string,
+  category: string | null,
+  notes: string | null,
+  quantity: number | null,
   id: number
 ) => {
   try {
@@ -58,7 +58,7 @@ export const updateList = async (
     });
 
     const res = await db.runAsync(
-      "UPDATE images SET name = coalesce(?, name), category = coalesce(?, category), notes = coalesce(?, notes), quantity = coalesce(?, quantity) WHERE id = ?",
+      "UPDATE lists SET name = coalesce(?, name), category = coalesce(?, category), notes = coalesce(?, notes), quantity = coalesce(?, quantity) WHERE id = ?",
       [name, category, notes, quantity, id]
     );
 
@@ -139,10 +139,8 @@ export const deleteItem = async (id: number) => {
       useNewConnection: true,
     });
 
-    const data = await db.withTransactionAsync(async () => {
-      const res = await db.runAsync("DELETE FROM items WHERE id = ?", [id]);
-      console.log({ res });
-    });
+    const res = await db.runAsync("DELETE FROM items WHERE id = ?", [id]);
+    console.log({ res });
   } catch (error) {
     console.log(error);
   }
@@ -187,17 +185,14 @@ export const updateItem = async (
   price: number | null,
   id: number
 ) => {
-  console.log(typeof name);
   try {
     const db = await SQLite.openDatabaseAsync("listAppDb", {
       useNewConnection: true,
     });
-
     const res = await db.runAsync(
       "UPDATE items SET name = coalesce(?, name), category = coalesce(?, category), notes = coalesce(?, notes), quantity = coalesce(?, quantity), price = coalesce(?, price) WHERE id = ?",
       [name, category, notes, quantity, price, id]
     );
-
     console.log({ res });
   } catch (error) {
     console.log(error);

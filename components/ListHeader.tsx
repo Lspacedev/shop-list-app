@@ -135,6 +135,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     alignItems: "center",
     paddingHorizontal: 25,
+    borderBottomWidth: 0,
+    shadowOpacity: 0,
   },
   text: {
     flex: 8,

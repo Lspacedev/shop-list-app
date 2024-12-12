@@ -23,9 +23,7 @@ const addItem = () => {
   const [loading, setLoading] = useState(false);
 
   const goBack = () => {
-    router.push({
-      pathname: "../[list]",
-    });
+    router.back();
   };
   const addItem = async () => {
     setLoading(true);
@@ -43,6 +41,7 @@ const addItem = () => {
     const timestamp = Date.now().toString();
     const qty = Number(quantity) ?? null;
     const prc = Number(price) ?? null;
+    console.log(name === "" ? null : name);
 
     await updateItem(
       name === "" ? null : name,

@@ -44,9 +44,17 @@ const Lists = () => {
   //   };
   // }, []);
 
-  if (loading) return <ActivityIndicator />;
+  if (loading)
+    return (
+      <ActivityIndicator
+        color={"#F97068"}
+        style={{ flex: 1, backgroundColor: "#1D1E2C" }}
+      />
+    );
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "#181925", paddingVertical: 25 }}
+    >
       <View>
         {lists.length > 0 ? (
           <FlatList
