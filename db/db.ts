@@ -1,5 +1,5 @@
 import * as SQLite from "expo-sqlite";
-import { addLists } from "@/reducers/listReducer";
+import { addLists, addItems, setLoading } from "@/reducers/listReducer";
 import { Action, Dispatch } from "@reduxjs/toolkit";
 
 export const initialiseDb = async () => {
@@ -80,15 +80,19 @@ export const readList = async (id: number) => {
   }
 };
 export const readLists = async (dispatch: Dispatch<Action<string>>) => {
+  // dispatch(setLoading(true));
   try {
     const db = await SQLite.openDatabaseAsync("listAppDb", {
       useNewConnection: true,
     });
 
     const res = await db.getAllAsync("SELECT * FROM lists");
-    console.log({ res });
+    if (res !== null) {
+      dispatch(addLists(res));
+    }
+    return true;
 
-    dispatch(addLists(res));
+    //dispatch(setLoading(false));
   } catch (error) {
     console.log(error);
   }
@@ -98,11 +102,9 @@ export const deleteList = async (id: number) => {
     const db = await SQLite.openDatabaseAsync("listAppDb", {
       useNewConnection: true,
     });
+    await db.execAsync("PRAGMA foreign_keys = ON");
 
-    const data = await db.withTransactionAsync(async () => {
-      const res = await db.runAsync("DELETE FROM lists WHERE id = ?", [id]);
-      console.log({ res });
-    });
+    const res = await db.runAsync("DELETE FROM lists WHERE id = ?", [id]);
   } catch (error) {
     console.log(error);
   }
@@ -121,13 +123,11 @@ export const insertItemData = async (
       useNewConnection: true,
     });
 
-    const insert = await db.withTransactionAsync(async () => {
-      const res = await db.runAsync(
-        "INSERT INTO items (name, category, notes, timestamp, quantity, price, listId) VALUES (?, ?, ?, ?, ?, ?)",
-        [name, category, notes, timestamp, quantity, price, listId]
-      );
-      console.log({ res });
-    });
+    const res = await db.runAsync(
+      "INSERT INTO items (name, category, notes, timestamp, quantity, price, listId) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [name, category, notes, timestamp, quantity, price, listId]
+    );
+    console.log({ res });
   } catch (error) {
     console.log(error);
   }
@@ -160,33 +160,41 @@ export const readItem = async (id: number) => {
     console.log(error);
   }
 };
-export const readItems = async (id: number) => {
-  try {
-    const db = await SQLite.openDatabaseAsync("listAppDb", {
-      useNewConnection: true,
-    });
-
-    const res = await db.getAllAsync("SELECT * FROM items");
-    console.log({ res });
-  } catch (error) {
-    console.log(error);
-  }
-};
-export const updateItem = async (
-  name: string,
-  category: string,
-  notes: string,
-  quantity: number,
-  price: number,
-  id: number
+export const readItems = async (
+  id: number,
+  dispatch: Dispatch<Action<string>>
 ) => {
   try {
     const db = await SQLite.openDatabaseAsync("listAppDb", {
       useNewConnection: true,
     });
 
+    const res = await db.getAllAsync("SELECT * FROM items WHERE listId = ?", [
+      id,
+    ]);
+    if (res !== null) {
+      dispatch(addItems(res));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const updateItem = async (
+  name: null | string,
+  category: string | null,
+  notes: string | null,
+  quantity: number | null,
+  price: number | null,
+  id: number
+) => {
+  console.log(typeof name);
+  try {
+    const db = await SQLite.openDatabaseAsync("listAppDb", {
+      useNewConnection: true,
+    });
+
     const res = await db.runAsync(
-      "UPDATE images SET name = coalesce(?, name), category = coalesce(?, category), notes = coalesce(?, notes), quantity = coalesce(?, quantity), price = coalesce(?, price) WHERE id = ?",
+      "UPDATE items SET name = coalesce(?, name), category = coalesce(?, category), notes = coalesce(?, notes), quantity = coalesce(?, quantity), price = coalesce(?, price) WHERE id = ?",
       [name, category, notes, quantity, price, id]
     );
 

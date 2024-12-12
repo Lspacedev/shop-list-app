@@ -1,32 +1,68 @@
-import { ScrollView, Text, Pressable, StyleSheet, Alert } from "react-native";
+import {
+  ScrollView,
+  Text,
+  Pressable,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import React, { useState } from "react";
 import CustomInput from "@/components/CustomInput";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
-import { router } from "expo-router";
-import { insertListData } from "@/db/db";
-const addList = () => {
+import { router, useLocalSearchParams } from "expo-router";
+import { insertItemData } from "@/db/db";
+//import { addItem } from "@/reducers/listReducer";
+const addItem = () => {
+  const { list } = useLocalSearchParams();
+
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [price, setPrice] = useState("");
   const [loading, setLoading] = useState(false);
 
   const goBack = () => {
-    router.push("/(tabs)");
+    router.push({
+      pathname: "../[list]",
+      params: { list: list },
+    });
   };
-  const addList = async () => {
+  const addItem = async () => {
     setLoading(true);
 
-    if (name === "" || category === "" || notes === "" || quantity === "") {
+    if (
+      name === "" ||
+      category === "" ||
+      notes === "" ||
+      quantity === "" ||
+      price === ""
+    ) {
       Alert.alert("Fields cannot be empty");
       setLoading(false);
     } else {
       const timestamp = Date.now().toString();
       const qty = Number(quantity) ?? 0;
-      await insertListData(name, category, notes, timestamp, qty);
-      router.push("/(tabs)");
+      const prc = Number(price) ?? 0;
+
+      await insertItemData(
+        name,
+        category,
+        notes,
+        timestamp,
+        qty,
+        prc,
+        Number(list)
+      );
+      setLoading(false);
+
+      router.push({
+        pathname: "../[list]",
+        params: { list: list },
+      });
     }
   };
+  if (loading) return <ActivityIndicator />;
   return (
     <ScrollView
       style={styles.container}
@@ -64,11 +100,16 @@ const addList = () => {
         handleChange={(text: string) => setQuantity(text)}
         error={""}
       />
+      <CustomInput
+        name="Price"
+        handleChange={(text: string) => setPrice(text)}
+        error={""}
+      />
 
       <Pressable
         style={styles.button}
         onPress={() => {
-          addList();
+          addItem();
         }}
       >
         <Text style={styles.buttonText}>Submit</Text>
@@ -76,7 +117,7 @@ const addList = () => {
     </ScrollView>
   );
 };
-export default addList;
+export default addItem;
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
@@ -102,7 +143,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#2E4057",
     padding: 15,
-    marginTop: 20,
+    marginTop: 50,
     borderRadius: 5,
   },
   buttonText: {

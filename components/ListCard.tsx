@@ -19,7 +19,7 @@ type ListProps = {
 const ListCard: React.FC<ListProps> = ({ list }) => {
   const goToList = () => {
     router.push({
-      pathname: "../list/[list]",
+      pathname: "../[list]",
       params: { list: list.id },
     });
   };
@@ -30,13 +30,13 @@ const ListCard: React.FC<ListProps> = ({ list }) => {
     >
       <View style={styles.container}>
         <View style={styles.name}>
-          <Text style={{ color: "#121b27" }}>{list.name}</Text>
+          <Text style={{ color: "#121b27" }}>{list && list.name}</Text>
         </View>
         <View style={styles.category}>
-          <Text style={{ color: "#121b27" }}>{list.category}</Text>
+          <Text style={{ color: "#121b27" }}>{list && list.category}</Text>
         </View>
         <View style={styles.quantity}>
-          <Text style={{ color: "#121b27" }}>{list.quantity}</Text>
+          <Text style={{ color: "#121b27" }}>{list && list.quantity}</Text>
         </View>
       </View>
     </Pressable>
