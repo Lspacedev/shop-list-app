@@ -49,7 +49,11 @@ const ItemCard: React.FC<ItemProps> = ({
     <Pressable
       style={({ pressed }) => [
         styles.container,
-        { backgroundColor: pressed ? "#D9D9D9" : "#E2EFDE" },
+        { backgroundColor: pressed ? "#575959" : "#0e0f16" },
+        isPressed && {
+          borderLeftColor: "#e39e9a",
+          borderLeftWidth: 5,
+        },
       ]}
       onPress={() => addToPressed(item.id)}
     >
@@ -63,6 +67,7 @@ const ItemCard: React.FC<ItemProps> = ({
       >
         <Text
           style={[
+            styles.text,
             isPressed && { textDecorationLine: "line-through", color: "grey" },
           ]}
         >
@@ -70,6 +75,7 @@ const ItemCard: React.FC<ItemProps> = ({
         </Text>
         <Text
           style={[
+            styles.text,
             isPressed && { textDecorationLine: "line-through", color: "grey" },
           ]}
         >
@@ -77,6 +83,7 @@ const ItemCard: React.FC<ItemProps> = ({
         </Text>
         <Text
           style={[
+            styles.text,
             isPressed && { textDecorationLine: "line-through", color: "grey" },
           ]}
         >
@@ -84,6 +91,7 @@ const ItemCard: React.FC<ItemProps> = ({
         </Text>
         <Text
           style={[
+            styles.text,
             isPressed && { textDecorationLine: "line-through", color: "grey" },
           ]}
         >
@@ -99,7 +107,7 @@ const ItemCard: React.FC<ItemProps> = ({
           <EvilIcons
             name="close"
             size={24}
-            color="black"
+            color="white"
             style={{
               padding: 0,
               margin: 10,
@@ -107,7 +115,16 @@ const ItemCard: React.FC<ItemProps> = ({
             }}
           />
         ) : (
-          <MaterialIcons name="edit" size={24} color="black" />
+          <MaterialIcons
+            name="edit"
+            size={24}
+            color="white"
+            style={{
+              padding: 0,
+              margin: 10,
+              textAlign: "right",
+            }}
+          />
         )}
       </Pressable>
     </Pressable>
@@ -122,10 +139,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     alignItems: "center",
     height: 50,
-    marginVertical: 10,
-    marginHorizontal: 25,
+    marginHorizontal: 10,
+    borderLeftColor: "#F97068",
+    borderLeftWidth: 5,
   },
 
-  category: {},
+  text: {
+    color: "white",
+  },
   quantity: {},
 });

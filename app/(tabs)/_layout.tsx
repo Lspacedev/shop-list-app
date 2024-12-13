@@ -26,10 +26,11 @@ export default function TabLayout() {
         name="index"
         options={{
           headerTitle: "ShoppingList",
-          headerTintColor: "#B7B5B3",
+          headerTintColor: "white",
 
           headerStyle: {
             backgroundColor: "#1D1E2C",
+            elevation: 0,
           },
           tabBarLabel: "Lists",
           tabBarIcon: ({ color }) => {

@@ -40,85 +40,28 @@ const ListCard: React.FC<ListProps> = ({ list }) => {
       params: { list: list.id },
     });
   };
-  const goToUpdate = () => {
-    router.push({
-      pathname: "/[list]/updateList",
-      params: { list: list.id },
-    });
-  };
+
   return (
     <Pressable
       style={{ flex: 1, justifyContent: "center", marginHorizontal: 10 }}
       onPress={goToList}
     >
-      <Modal
-        style={styles.menuModal}
-        animationType="fade"
-        transparent={true}
-        visible={openMenu}
-        onRequestClose={() => {
-          setOpenMenu(false);
-        }}
-      >
-        <TouchableWithoutFeedback
-          onPress={() => {
-            setOpenMenu(false);
-          }}
-        >
-          <View style={{ backgroundColor: "transparent", flex: 1 }}>
-            <TouchableWithoutFeedback onPress={() => {}}>
-              <View style={styles.menu}>
-                <Text
-                  onPress={() => {
-                    setOpenMenu(false);
-                  }}
-                  style={{
-                    padding: 0,
-                    margin: 0,
-                    textAlign: "right",
-                  }}
-                >
-                  <EvilIcons name="close" size={24} color="black" />
-                </Text>
-
-                <Pressable
-                  style={styles.menuItem}
-                  onPress={() => {
-                    goToUpdate();
-                  }}
-                >
-                  <Text>Edit</Text>
-                </Pressable>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
       <View style={styles.container}>
         <View style={styles.name}>
-          <Text style={{ color: "#E5E7E6" }}>{list && list.name}</Text>
+          <Text style={{ color: "#E5E7E6", fontSize: 20 }}>
+            {list && list.name}
+          </Text>
         </View>
         <View style={styles.category}>
-          <Text style={{ color: "#E5E7E6" }}>{list && list.category}</Text>
+          <Text style={{ color: "#E5E7E6", fontSize: 20 }}>
+            {list && list.category}
+          </Text>
         </View>
         <View style={styles.quantity}>
-          <Text style={{ color: "#E5E7E6" }}>{list && list.quantity}</Text>
+          <Text style={{ color: "#E5E7E6", fontSize: 20 }}>
+            {list && list.quantity}
+          </Text>
         </View>
-        <Pressable
-          onPress={() => {
-            setOpenMenu(true);
-          }}
-        >
-          <SimpleLineIcons
-            name="options-vertical"
-            size={24}
-            style={{
-              color: "#D7CDCC",
-              padding: 5,
-              borderRadius: 50,
-            }}
-          />
-        </Pressable>
       </View>
     </Pressable>
   );
@@ -131,7 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    height: 50,
+    height: 70,
     backgroundColor: "#242A2E",
     marginVertical: 2,
     paddingVertical: 5,

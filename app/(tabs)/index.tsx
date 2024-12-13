@@ -53,7 +53,7 @@ const Lists = () => {
     );
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: "#181925", paddingVertical: 25 }}
+      style={{ flex: 1, backgroundColor: "#0e0f16", paddingVertical: 25 }}
     >
       <View>
         {lists.length > 0 ? (

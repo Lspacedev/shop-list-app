@@ -52,6 +52,12 @@ const ListHeader = (id: any) => {
   const goToLists = () => {
     router.push("/(tabs)");
   };
+  const goToUpdate = () => {
+    router.push({
+      pathname: "/[list]/updateList",
+      params: { list: listId },
+    });
+  };
   const removeList = async () => {
     setLoading(true);
     await deleteList(Number(listId));
@@ -61,7 +67,7 @@ const ListHeader = (id: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <Pressable onPress={goToLists} style={{ flex: 1 }}>
-        <Ionicons name="arrow-back" size={24} color="black" />
+        <Ionicons name="arrow-back" size={24} color="white" />
       </Pressable>
       <Text style={styles.text}>{list?.name}</Text>
       <Modal
@@ -93,7 +99,14 @@ const ListHeader = (id: any) => {
                 >
                   <EvilIcons name="close" size={24} color="black" />
                 </Text>
-
+                <Pressable
+                  style={styles.menuItem}
+                  onPress={() => {
+                    goToUpdate();
+                  }}
+                >
+                  <Text>Edit</Text>
+                </Pressable>
                 <Pressable
                   style={styles.menuItem}
                   onPress={() => {
@@ -117,7 +130,7 @@ const ListHeader = (id: any) => {
           name="options-vertical"
           size={24}
           style={{
-            color: "black",
+            color: "white",
             padding: 5,
             borderRadius: 50,
           }}
@@ -137,10 +150,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     borderBottomWidth: 0,
     shadowOpacity: 0,
+    elevation: 0,
+    backgroundColor: "#1D1E2C",
   },
   text: {
     flex: 8,
     textAlign: "center",
+    color: "white",
   },
   menuModal: {
     flex: 1,

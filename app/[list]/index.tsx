@@ -70,7 +70,9 @@ const List = () => {
 
   if (loading) return <ActivityIndicator />;
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "#242A2E", paddingVertical: 25 }}
+    >
       <View>
         {items.length > 0 ? (
           <FlatList
