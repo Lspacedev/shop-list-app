@@ -8,7 +8,6 @@ const addList = () => {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
-  const [quantity, setQuantity] = useState("");
   const [loading, setLoading] = useState(false);
 
   const goBack = () => {
@@ -17,13 +16,13 @@ const addList = () => {
   const addList = async () => {
     setLoading(true);
 
-    if (name === "" || category === "" || notes === "" || quantity === "") {
+    if (name === "" || category === "" || notes === "") {
       Alert.alert("Fields cannot be empty");
       setLoading(false);
     } else {
       const timestamp = Date.now().toString();
-      const qty = Number(quantity) ?? 0;
-      await insertListData(name, category, notes, timestamp, qty);
+
+      await insertListData(name, category, notes, timestamp);
       router.push("/(tabs)");
     }
   };
@@ -57,11 +56,6 @@ const addList = () => {
       <CustomInput
         name="Notes"
         handleChange={(text: string) => setNotes(text)}
-        error={""}
-      />
-      <CustomInput
-        name="Quantity"
-        handleChange={(text: string) => setQuantity(text)}
         error={""}
       />
 

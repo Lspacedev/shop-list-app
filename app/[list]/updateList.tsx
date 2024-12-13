@@ -10,7 +10,6 @@ const UpdateList = () => {
   const [name, setName] = useState<string | null>("");
   const [category, setCategory] = useState<string | null>("");
   const [notes, setNotes] = useState<string | null>("");
-  const [quantity, setQuantity] = useState<string | null>("");
   const [loading, setLoading] = useState(false);
 
   const goBack = () => {
@@ -19,12 +18,10 @@ const UpdateList = () => {
   const update = async () => {
     setLoading(true);
 
-    const qty = Number(quantity) ?? 0;
     await updateList(
       name === "" ? null : name,
       category === "" ? null : category,
       notes === "" ? null : notes,
-      qty === 0 ? null : qty,
       Number(list)
     );
     router.push("/(tabs)");
@@ -59,11 +56,6 @@ const UpdateList = () => {
       <CustomInput
         name="Notes"
         handleChange={(text: string) => setNotes(text)}
-        error={""}
-      />
-      <CustomInput
-        name="Quantity"
-        handleChange={(text: string) => setQuantity(text)}
         error={""}
       />
 

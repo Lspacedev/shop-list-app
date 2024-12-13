@@ -157,6 +157,7 @@ const styles = StyleSheet.create({
     flex: 8,
     textAlign: "center",
     color: "white",
+    fontSize: 20,
   },
   menuModal: {
     flex: 1,

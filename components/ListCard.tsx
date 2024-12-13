@@ -57,11 +57,6 @@ const ListCard: React.FC<ListProps> = ({ list }) => {
             {list && list.category}
           </Text>
         </View>
-        <View style={styles.quantity}>
-          <Text style={{ color: "#E5E7E6", fontSize: 20 }}>
-            {list && list.quantity}
-          </Text>
-        </View>
       </View>
     </Pressable>
   );
@@ -78,7 +73,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#242A2E",
     marginVertical: 2,
     paddingVertical: 5,
-    paddingHorizontal: 5,
+    paddingHorizontal: 15,
     borderLeftColor: "#9C528B",
     borderLeftWidth: 5,
   },

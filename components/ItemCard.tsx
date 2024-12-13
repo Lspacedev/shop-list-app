@@ -61,7 +61,7 @@ const ItemCard: React.FC<ItemProps> = ({
         style={{
           flex: 4,
           flexDirection: "row",
-          justifyContent: "space-evenly",
+          justifyContent: "space-between",
           alignItems: "center",
         }}
       >
@@ -73,60 +73,93 @@ const ItemCard: React.FC<ItemProps> = ({
         >
           {item.name}
         </Text>
+
+        <View style={{ flex: 1 }}>
+          <Text
+            style={[
+              { color: "white", fontSize: 10 },
+              isPressed && {
+                color: "grey",
+              },
+            ]}
+          >
+            Qty:
+          </Text>
+          <Text
+            style={[
+              styles.text,
+              isPressed && {
+                textDecorationLine: "line-through",
+                color: "grey",
+              },
+            ]}
+          >
+            {item.quantity}
+          </Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text
+            style={[
+              { color: "white", fontSize: 10 },
+              isPressed && {
+                color: "grey",
+              },
+            ]}
+          >
+            Price:
+          </Text>
+
+          <Text
+            style={[
+              styles.text,
+              isPressed && {
+                textDecorationLine: "line-through",
+                color: "grey",
+              },
+            ]}
+          >
+            {item.price}
+          </Text>
+        </View>
+        <Pressable
+          onPress={isPressed ? () => removeItem() : () => goToUpdate()}
+          style={{ flex: 1 }}
+        >
+          {isPressed ? (
+            <EvilIcons
+              name="close"
+              size={24}
+              color="white"
+              style={{
+                padding: 0,
+                margin: 10,
+                textAlign: "right",
+              }}
+            />
+          ) : (
+            <MaterialIcons
+              name="edit"
+              size={24}
+              color="white"
+              style={{
+                padding: 0,
+                margin: 10,
+                textAlign: "right",
+              }}
+            />
+          )}
+        </Pressable>
+      </View>
+      <View style={{ flex: 2 }}>
         <Text
           style={[
-            styles.text,
+            { color: "whitesmoke", fontSize: 14 },
             isPressed && { textDecorationLine: "line-through", color: "grey" },
           ]}
         >
-          {item.category}
-        </Text>
-        <Text
-          style={[
-            styles.text,
-            isPressed && { textDecorationLine: "line-through", color: "grey" },
-          ]}
-        >
-          {item.quantity}
-        </Text>
-        <Text
-          style={[
-            styles.text,
-            isPressed && { textDecorationLine: "line-through", color: "grey" },
-          ]}
-        >
-          {item.price}
+          {item.notes}
         </Text>
       </View>
-
-      <Pressable
-        onPress={isPressed ? () => removeItem() : () => goToUpdate()}
-        style={{ flex: 1 }}
-      >
-        {isPressed ? (
-          <EvilIcons
-            name="close"
-            size={24}
-            color="white"
-            style={{
-              padding: 0,
-              margin: 10,
-              textAlign: "right",
-            }}
-          />
-        ) : (
-          <MaterialIcons
-            name="edit"
-            size={24}
-            color="white"
-            style={{
-              padding: 0,
-              margin: 10,
-              textAlign: "right",
-            }}
-          />
-        )}
-      </Pressable>
     </Pressable>
   );
 };
@@ -135,16 +168,17 @@ export default ItemCard;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    height: 50,
+    height: 90,
     marginHorizontal: 10,
     borderLeftColor: "#F97068",
     borderLeftWidth: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 15,
   },
 
   text: {
+    flex: 1,
+    fontSize: 18,
     color: "white",
   },
   quantity: {},

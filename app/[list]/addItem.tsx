@@ -16,7 +16,6 @@ const addItem = () => {
   const { list } = useLocalSearchParams();
 
   const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
@@ -31,13 +30,7 @@ const addItem = () => {
   const addItem = async () => {
     setLoading(true);
 
-    if (
-      name === "" ||
-      category === "" ||
-      notes === "" ||
-      quantity === "" ||
-      price === ""
-    ) {
+    if (name === "" || notes === "" || quantity === "" || price === "") {
       Alert.alert("Fields cannot be empty");
       setLoading(false);
     } else {
@@ -45,15 +38,7 @@ const addItem = () => {
       const qty = Number(quantity) ?? 0;
       const prc = Number(price) ?? 0;
 
-      await insertItemData(
-        name,
-        category,
-        notes,
-        timestamp,
-        qty,
-        prc,
-        Number(list)
-      );
+      await insertItemData(name, notes, timestamp, qty, prc, Number(list));
       setLoading(false);
 
       router.push({
@@ -85,11 +70,7 @@ const addItem = () => {
         handleChange={(text: string) => setName(text)}
         error={""}
       />
-      <CustomInput
-        name="Category"
-        handleChange={(text: string) => setCategory(text)}
-        error={""}
-      />
+
       <CustomInput
         name="Notes"
         handleChange={(text: string) => setNotes(text)}

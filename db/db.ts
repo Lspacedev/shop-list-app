@@ -11,8 +11,8 @@ export const initialiseDb = async () => {
 
     const init = await db.withTransactionAsync(async () => {
       const res = await db.execAsync(
-        `CREATE TABLE IF NOT EXISTS lists (id INTEGER PRIMARY KEY NOT NULL , name TEXT NOT NULL, category TEXT NOT NULL, notes TEXT NOT NULL, timestamp TEXT NOT NULL, quantity REAL NOT NULL);
-      CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY NOT NULL , name TEXT NOT NULL, category TEXT NOT NULL, notes TEXT NOT NULL, timestamp TEXT NOT NULL, quantity REAL NOT NULL, price REAL NOT NULL, listId INTEGER, 
+        `CREATE TABLE IF NOT EXISTS lists (id INTEGER PRIMARY KEY NOT NULL , name TEXT NOT NULL, category TEXT NOT NULL, notes TEXT NOT NULL, timestamp TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY NOT NULL , name TEXT NOT NULL, notes TEXT NOT NULL, timestamp TEXT NOT NULL, quantity REAL NOT NULL, price REAL NOT NULL, listId INTEGER, 
     FOREIGN KEY (listId) REFERENCES lists(id) ON DELETE CASCADE);
       `
       );
@@ -27,8 +27,7 @@ export const insertListData = async (
   name: string,
   category: string,
   notes: string,
-  timestamp: string,
-  quantity: number
+  timestamp: string
 ) => {
   try {
     const db = await SQLite.openDatabaseAsync("listAppDb", {
@@ -36,8 +35,8 @@ export const insertListData = async (
     });
 
     const res = await db.runAsync(
-      "INSERT INTO lists (name, category, notes, timestamp, quantity) VALUES (?, ?, ?, ?, ?)",
-      [name, category, notes, timestamp, quantity]
+      "INSERT INTO lists (name, category, notes, timestamp) VALUES (?, ?, ?, ?)",
+      [name, category, notes, timestamp]
     );
     console.log({ res });
     return res;
@@ -49,7 +48,6 @@ export const updateList = async (
   name: null | string,
   category: string | null,
   notes: string | null,
-  quantity: number | null,
   id: number
 ) => {
   try {
@@ -58,8 +56,8 @@ export const updateList = async (
     });
 
     const res = await db.runAsync(
-      "UPDATE lists SET name = coalesce(?, name), category = coalesce(?, category), notes = coalesce(?, notes), quantity = coalesce(?, quantity) WHERE id = ?",
-      [name, category, notes, quantity, id]
+      "UPDATE lists SET name = coalesce(?, name), category = coalesce(?, category), notes = coalesce(?, notes) WHERE id = ?",
+      [name, category, notes, id]
     );
 
     console.log({ res });
@@ -111,7 +109,6 @@ export const deleteList = async (id: number) => {
 };
 export const insertItemData = async (
   name: string,
-  category: string,
   notes: string,
   timestamp: string,
   quantity: number,
@@ -124,8 +121,8 @@ export const insertItemData = async (
     });
 
     const res = await db.runAsync(
-      "INSERT INTO items (name, category, notes, timestamp, quantity, price, listId) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [name, category, notes, timestamp, quantity, price, listId]
+      "INSERT INTO items (name,  notes, timestamp, quantity, price, listId) VALUES (?, ?, ?, ?, ?, ?)",
+      [name, notes, timestamp, quantity, price, listId]
     );
     console.log({ res });
   } catch (error) {
@@ -179,7 +176,6 @@ export const readItems = async (
 };
 export const updateItem = async (
   name: null | string,
-  category: string | null,
   notes: string | null,
   quantity: number | null,
   price: number | null,
@@ -190,8 +186,8 @@ export const updateItem = async (
       useNewConnection: true,
     });
     const res = await db.runAsync(
-      "UPDATE items SET name = coalesce(?, name), category = coalesce(?, category), notes = coalesce(?, notes), quantity = coalesce(?, quantity), price = coalesce(?, price) WHERE id = ?",
-      [name, category, notes, quantity, price, id]
+      "UPDATE items SET name = coalesce(?, name), notes = coalesce(?, notes), quantity = coalesce(?, quantity), price = coalesce(?, price) WHERE id = ?",
+      [name, notes, quantity, price, id]
     );
     console.log({ res });
   } catch (error) {

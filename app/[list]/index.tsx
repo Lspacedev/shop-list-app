@@ -93,6 +93,8 @@ const List = () => {
             style={{
               textAlign: "center",
               margin: 25,
+              color: "white",
+              fontSize: 15,
             }}
           >
             No items added

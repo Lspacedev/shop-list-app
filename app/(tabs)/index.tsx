@@ -21,6 +21,7 @@ const Lists = () => {
   const lists = useSelector((state: RootState) => state.lists.lists);
   console.log({ isFocused, l: lists.length > 0 });
   useEffect(() => {
+    initialiseDb();
     if (isFocused) {
       (async () => {
         const res = await readLists(dispatch);
@@ -68,6 +69,7 @@ const Lists = () => {
             style={{
               textAlign: "center",
               margin: 25,
+              color: "white",
             }}
           >
             No lists added

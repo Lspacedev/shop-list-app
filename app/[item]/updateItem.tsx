@@ -16,7 +16,6 @@ const addItem = () => {
   const { item } = useLocalSearchParams();
 
   const [name, setName] = useState<string | null>("");
-  const [category, setCategory] = useState<string | null>("");
   const [notes, setNotes] = useState<string | null>("");
   const [quantity, setQuantity] = useState<string | null>("");
   const [price, setPrice] = useState<string | null>("");
@@ -45,7 +44,6 @@ const addItem = () => {
 
     await updateItem(
       name === "" ? null : name,
-      category === "" ? null : category,
       notes === "" ? null : notes,
       qty === 0 ? null : qty,
       prc === 0 ? null : prc,
@@ -79,11 +77,7 @@ const addItem = () => {
         handleChange={(text: string) => setName(text)}
         error={""}
       />
-      <CustomInput
-        name="Category"
-        handleChange={(text: string) => setCategory(text)}
-        error={""}
-      />
+
       <CustomInput
         name="Notes"
         handleChange={(text: string) => setNotes(text)}
