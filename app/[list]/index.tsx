@@ -36,7 +36,6 @@ const List = () => {
       "hardwareBackPress",
       () => {
         storeData("pressed", JSON.stringify(pressedItems));
-        console.log("back press");
       }
     );
 
@@ -53,14 +52,9 @@ const List = () => {
       })();
     }, [])
   );
+
   useEffect(() => {
-    if (!isFocused) {
-      console.log("save to storage");
-      storeData("pressed", JSON.stringify(pressedItems));
-    } else {
-      console.log("get from storage");
-      getData();
-    }
+    getData();
   }, [isFocused]);
 
   const storeData = async (key: string, value: any) => {
@@ -80,13 +74,17 @@ const List = () => {
       console.error("Error fetching data", error);
     }
   };
-  const addToPressed = (id: number) => {
+  const addToPressed = async (id: number) => {
     const filteredItem = pressedItems.filter((press) => press.itemId === id);
     if (filteredItem.length > 0) {
-      setPressedItems((prev) => prev.filter((press) => press.itemId !== id));
+      const filtered = pressedItems.filter((press) => press.itemId !== id);
+      setPressedItems(filtered);
+      await AsyncStorage.setItem("pressed", JSON.stringify(filtered));
     } else {
       const pressObj: PressType = { listId: Number(list), itemId: id };
+      const arr = [...pressedItems, pressObj];
       setPressedItems((prev) => [...prev, pressObj]);
+      await AsyncStorage.setItem("pressed", JSON.stringify(arr));
     }
   };
   return (

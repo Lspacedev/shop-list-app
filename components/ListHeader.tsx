@@ -65,12 +65,14 @@ const ListHeader = (id: any) => {
     setLoading(true);
     await deleteList(Number(listId));
     const data = await AsyncStorage.getItem("pressed");
+    await AsyncStorage.removeItem("pressed");
+
     if (data) {
       const arr = JSON.parse(data);
+
       const filtered = arr.filter(
         (obj: PressType) => obj.listId !== Number(listId)
       );
-
       await AsyncStorage.setItem("pressed", JSON.stringify(filtered));
     }
     router.push("/");

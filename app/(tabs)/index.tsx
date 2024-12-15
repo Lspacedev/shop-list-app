@@ -32,20 +32,10 @@ const Lists = () => {
 
   const isFocused = useIsFocused();
   const lists = useSelector((state: RootState) => state.lists.lists);
+
   useEffect(() => {
     initialiseDb();
-  }, []);
-  // useEffect(() => {
-  //   initialiseDb();
-  //   if (isFocused) {
-  //     (async () => {
-  //       const res = await readLists(dispatch);
-  //       if (res) {
-  //         setLoading(false);
-  //       }
-  //     })();
-  //   }
-  // }, [isFocused]);
+  }, [isFocused]);
   useFocusEffect(
     useCallback(() => {
       readLists(dispatch);
@@ -54,9 +44,7 @@ const Lists = () => {
   useEffect(() => {
     const subscription = DeviceEventEmitter.addListener(
       "hardwareBackPress",
-      () => {
-        console.log("back press");
-      }
+      () => {}
     );
 
     return () => {
@@ -86,21 +74,22 @@ const Lists = () => {
   const deleteLists = async () => {
     let arr: PressType[] = [];
     const data = await AsyncStorage.getItem("pressed");
+    await AsyncStorage.removeItem("pressed");
 
-    if (data) {
-      arr = JSON.parse(data);
-    }
     if (assets.length > 0) {
+      if (data) {
+        arr = JSON.parse(data);
+        assets.map((listId) => {
+          arr = arr.filter((obj: PressType) => obj.listId !== Number(listId));
+        });
+      }
       Promise.all(
         assets.map(async (listId) => {
           await deleteList(listId);
-          arr = arr.filter((obj: PressType) => obj.listId !== Number(listId));
-
-          await readLists(dispatch);
         })
       );
       await AsyncStorage.setItem("pressed", JSON.stringify(arr));
-
+      await readLists(dispatch);
       setAssets([]);
       setShow(false);
     } else {
