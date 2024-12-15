@@ -5,7 +5,11 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
-import { deleteItem } from "@/db/db";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { deleteItem, readItems } from "@/db/db";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocalSearchParams } from "expo-router";
+
 type ItemType = {
   id: number;
   name: string;
@@ -16,10 +20,14 @@ type ItemType = {
   price: number;
 };
 
+type PressType = {
+  listId: number;
+  itemId: number;
+};
 type ItemProps = {
   item: ItemType;
-  pressedItems: Number[];
-  addToPressed: (id: Number) => void;
+  pressedItems: PressType[];
+  addToPressed: (id: number) => void;
 };
 
 const ItemCard: React.FC<ItemProps> = ({
@@ -28,8 +36,14 @@ const ItemCard: React.FC<ItemProps> = ({
   addToPressed,
 }) => {
   const [isPressed, setIsPressed] = useState(false);
+  const dispatch = useDispatch();
+  const { list } = useLocalSearchParams();
+
   useEffect(() => {
-    if (pressedItems.indexOf(item.id) !== -1) {
+    const filtered = pressedItems.filter(
+      (pressed) => pressed.itemId === item.id
+    );
+    if (filtered.length > 0) {
       setIsPressed(true);
     } else {
       setIsPressed(false);
@@ -43,17 +57,14 @@ const ItemCard: React.FC<ItemProps> = ({
   };
   const removeItem = async () => {
     await deleteItem(item.id);
-    router.back();
+    addToPressed(item.id);
+    readItems(Number(list), dispatch);
   };
   return (
     <Pressable
       style={({ pressed }) => [
         styles.container,
-        { backgroundColor: pressed ? "#575959" : "#0e0f16" },
-        isPressed && {
-          borderLeftColor: "#e39e9a",
-          borderLeftWidth: 5,
-        },
+        { backgroundColor: pressed ? "#575959" : "#242A2E" },
       ]}
       onPress={() => addToPressed(item.id)}
     >
@@ -65,6 +76,21 @@ const ItemCard: React.FC<ItemProps> = ({
           alignItems: "center",
         }}
       >
+        {isPressed ? (
+          <AntDesign
+            name="checkcircle"
+            size={24}
+            color="#F97068"
+            style={{ marginHorizontal: 10 }}
+          />
+        ) : (
+          <MaterialIcons
+            name="radio-button-unchecked"
+            size={24}
+            color="white"
+            style={{ marginHorizontal: 10 }}
+          />
+        )}
         <Text
           style={[
             styles.text,
@@ -74,20 +100,10 @@ const ItemCard: React.FC<ItemProps> = ({
           {item.name}
         </Text>
 
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, flexDirection: "row" }}>
           <Text
             style={[
-              { color: "white", fontSize: 10 },
-              isPressed && {
-                color: "grey",
-              },
-            ]}
-          >
-            Qty:
-          </Text>
-          <Text
-            style={[
-              styles.text,
+              { fontSize: 14, color: "white" },
               isPressed && {
                 textDecorationLine: "line-through",
                 color: "grey",
@@ -97,33 +113,24 @@ const ItemCard: React.FC<ItemProps> = ({
             {item.quantity}
           </Text>
         </View>
-        <View style={{ flex: 1 }}>
+        <View
+          style={{ flex: 2, flexDirection: "row", justifyContent: "center" }}
+        >
           <Text
             style={[
-              { color: "white", fontSize: 10 },
-              isPressed && {
-                color: "grey",
-              },
-            ]}
-          >
-            Price:
-          </Text>
-
-          <Text
-            style={[
-              styles.text,
+              { fontSize: 14, color: "white" },
               isPressed && {
                 textDecorationLine: "line-through",
                 color: "grey",
               },
             ]}
           >
-            {item.price}
+            {`R${item.price}`}
           </Text>
         </View>
         <Pressable
           onPress={isPressed ? () => removeItem() : () => goToUpdate()}
-          style={{ flex: 1 }}
+          style={{ flex: 2 }}
         >
           {isPressed ? (
             <EvilIcons
@@ -143,7 +150,7 @@ const ItemCard: React.FC<ItemProps> = ({
               color="white"
               style={{
                 padding: 0,
-                margin: 10,
+                marginHorizontal: 10,
                 textAlign: "right",
               }}
             />
@@ -153,8 +160,11 @@ const ItemCard: React.FC<ItemProps> = ({
       <View style={{ flex: 2 }}>
         <Text
           style={[
-            { color: "whitesmoke", fontSize: 14 },
-            isPressed && { textDecorationLine: "line-through", color: "grey" },
+            { color: "whitesmoke", fontSize: 10, marginHorizontal: 45 },
+            isPressed && {
+              textDecorationLine: "line-through",
+              color: "grey",
+            },
           ]}
         >
           {item.notes}
@@ -168,16 +178,16 @@ export default ItemCard;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: 90,
+    height: 70,
     marginHorizontal: 10,
-    borderLeftColor: "#F97068",
-    borderLeftWidth: 5,
+    marginVertical: 2,
     paddingVertical: 5,
     paddingHorizontal: 15,
+    borderRadius: 5,
   },
 
   text: {
-    flex: 1,
+    flex: 3,
     fontSize: 18,
     color: "white",
   },

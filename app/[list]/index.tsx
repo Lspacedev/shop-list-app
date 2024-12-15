@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   FlatList,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import FAB from "@/components/FAB";
 import ItemCard from "@/components/ItemCard";
 import type { RootState } from "@/store/store";
@@ -14,9 +14,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { DeviceEventEmitter } from "react-native";
+import { router, useFocusEffect } from "expo-router";
 
+type PressType = {
+  listId: number;
+  itemId: number;
+};
 const List = () => {
-  const [pressedItems, setPressedItems] = useState<Number[]>([]);
+  const [pressedItems, setPressedItems] = useState<PressType[]>([]);
   const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
@@ -24,24 +31,38 @@ const List = () => {
   const isFocused = useIsFocused();
 
   const items = useSelector((state: RootState) => state.lists.items);
-
   useEffect(() => {
-    if (isFocused) {
+    const subscription = DeviceEventEmitter.addListener(
+      "hardwareBackPress",
+      () => {
+        storeData("pressed", JSON.stringify(pressedItems));
+        console.log("back press");
+      }
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, [pressedItems]);
+
+  useFocusEffect(
+    useCallback(() => {
       (async () => {
         await readItems(Number(list), dispatch);
         setLoading(false);
       })();
+    }, [])
+  );
+  useEffect(() => {
+    if (!isFocused) {
+      console.log("save to storage");
+      storeData("pressed", JSON.stringify(pressedItems));
+    } else {
+      console.log("get from storage");
+      getData();
     }
   }, [isFocused]);
-  // useEffect(() => {
-  //   if (!isFocused) {
-  //     console.log("save to storage");
-  //     storeData("pressed", JSON.stringify(pressedItems));
-  //   } else {
-  //     console.log("get from storage");
-  //     getData();
-  //   }
-  // }, [isFocused]);
+
   const storeData = async (key: string, value: any) => {
     try {
       await AsyncStorage.setItem(key, value);
@@ -59,24 +80,35 @@ const List = () => {
       console.error("Error fetching data", error);
     }
   };
-  const addToPressed = (id: Number) => {
-    const filteredItem = pressedItems.filter((itemId) => itemId === id);
+  const addToPressed = (id: number) => {
+    const filteredItem = pressedItems.filter((press) => press.itemId === id);
     if (filteredItem.length > 0) {
-      setPressedItems((prev) => prev.filter((itemId) => itemId !== id));
+      setPressedItems((prev) => prev.filter((press) => press.itemId !== id));
     } else {
-      setPressedItems((prev) => [...prev, id]);
+      const pressObj: PressType = { listId: Number(list), itemId: id };
+      setPressedItems((prev) => [...prev, pressObj]);
     }
   };
-
-  if (loading) return <ActivityIndicator />;
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: "#242A2E", paddingVertical: 25 }}
+      style={{ flex: 1, backgroundColor: "#040406", paddingVertical: 25 }}
     >
       <View>
-        {items.length > 0 ? (
+        {!loading && items ? (
           <FlatList
             data={items}
+            ListEmptyComponent={
+              <Text
+                style={{
+                  textAlign: "center",
+                  margin: 25,
+                  color: "white",
+                  fontSize: 15,
+                }}
+              >
+                No items added
+              </Text>
+            }
             contentContainerStyle={{ justifyContent: "center" }}
             renderItem={({ item }) => {
               return (
@@ -89,16 +121,8 @@ const List = () => {
             }}
           />
         ) : (
-          <Text
-            style={{
-              textAlign: "center",
-              margin: 25,
-              color: "white",
-              fontSize: 15,
-            }}
-          >
-            No items added
-          </Text>
+          <Text></Text>
+          // <ActivityIndicator color="white" style={{ flex: 1 }} />
         )}
       </View>
 

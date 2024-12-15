@@ -1,14 +1,35 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+type ListType = {
+  id: number;
+  name: string;
+  category: string;
+  notes: string;
+  timestamp: string;
+};
+type ItemType = {
+  id: number;
+  name: string;
+  category: string;
+  notes: string;
+  quantity: number;
+  timestamp: string;
+  price: number;
+};
+type ListState = {
+  lists: ListType[];
+  items: ItemType[];
+};
+const initialState: ListState = {
+  lists: [],
+  items: [],
+};
 const listSlice = createSlice({
   name: "lists",
-  initialState: {
-    loading: true,
-    lists: [],
-    items: [],
-  },
+  initialState,
   reducers: {
-    addList: (state, action) => {},
+    addToList: (state, action) => {
+      state.lists.push(action.payload);
+    },
     updateList: (state, action) => {},
     deleteList: (state, action) => {},
     getList: (state, action) => {},
@@ -20,12 +41,8 @@ const listSlice = createSlice({
     addItems: (state, action) => {
       state.items = action.payload;
     },
-    setLoading: (state, action) => {
-      state.loading = action.payload;
-    },
   },
 });
 
-export const { addList, addItem, addLists, addItems, setLoading } =
-  listSlice.actions;
+export const { addToList, addItem, addLists, addItems } = listSlice.actions;
 export default listSlice.reducer;

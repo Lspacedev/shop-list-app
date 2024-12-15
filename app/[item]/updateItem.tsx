@@ -59,6 +59,7 @@ const addItem = () => {
     <ScrollView
       style={styles.container}
       contentContainerStyle={{ flex: 1, gap: 25 }}
+      keyboardShouldPersistTaps="always"
     >
       <Pressable onPress={goBack}>
         <EvilIcons
@@ -109,6 +110,7 @@ export default addItem;
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
+    backgroundColor: "#040406",
   },
   label: {
     color: "#BDBDBD",
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
     marginVertical: -5,
   },
   button: {
-    backgroundColor: "#2E4057",
+    backgroundColor: "#F97068",
     padding: 15,
     marginTop: 50,
     borderRadius: 5,

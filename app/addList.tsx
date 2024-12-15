@@ -1,19 +1,32 @@
-import { ScrollView, Text, Pressable, StyleSheet, Alert } from "react-native";
+import {
+  ScrollView,
+  Text,
+  Pressable,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import React, { useState } from "react";
 import CustomInput from "@/components/CustomInput";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import { router } from "expo-router";
-import { insertListData } from "@/db/db";
+import { insertListData, readLists } from "@/db/db";
+import { useDispatch, useSelector } from "react-redux";
+
 const addList = () => {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const goBack = () => {
     router.push("/(tabs)");
   };
   const addList = async () => {
+    console.log("press");
     setLoading(true);
 
     if (name === "" || category === "" || notes === "") {
@@ -23,6 +36,8 @@ const addList = () => {
       const timestamp = Date.now().toString();
 
       await insertListData(name, category, notes, timestamp);
+      await readLists(dispatch);
+
       router.push("/(tabs)");
     }
   };
@@ -30,6 +45,7 @@ const addList = () => {
     <ScrollView
       style={styles.container}
       contentContainerStyle={{ flex: 1, gap: 25 }}
+      keyboardShouldPersistTaps="always"
     >
       <Pressable onPress={goBack}>
         <EvilIcons
@@ -59,14 +75,9 @@ const addList = () => {
         error={""}
       />
 
-      <Pressable
-        style={styles.button}
-        onPress={() => {
-          addList();
-        }}
-      >
-        <Text style={styles.buttonText}>Submit</Text>
-      </Pressable>
+      <TouchableOpacity style={styles.button} onPress={addList}>
+        <Text style={styles.buttonText}>Add</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -74,6 +85,7 @@ export default addList;
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
+    backgroundColor: "#040406",
   },
   label: {
     color: "#BDBDBD",
@@ -94,10 +106,11 @@ const styles = StyleSheet.create({
     marginVertical: -5,
   },
   button: {
-    backgroundColor: "#2E4057",
+    backgroundColor: "#F97068",
     padding: 15,
     marginTop: 20,
     borderRadius: 5,
+    zIndex: 1,
   },
   buttonText: {
     color: "#FFFFFF",

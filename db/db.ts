@@ -1,5 +1,5 @@
 import * as SQLite from "expo-sqlite";
-import { addLists, addItems, setLoading } from "@/reducers/listReducer";
+import { addLists, addItems } from "@/reducers/listReducer";
 import { Action, Dispatch } from "@reduxjs/toolkit";
 
 export const initialiseDb = async () => {
@@ -38,7 +38,6 @@ export const insertListData = async (
       "INSERT INTO lists (name, category, notes, timestamp) VALUES (?, ?, ?, ?)",
       [name, category, notes, timestamp]
     );
-    console.log({ res });
     return res;
   } catch (error) {
     console.log(error);
@@ -59,8 +58,7 @@ export const updateList = async (
       "UPDATE lists SET name = coalesce(?, name), category = coalesce(?, category), notes = coalesce(?, notes) WHERE id = ?",
       [name, category, notes, id]
     );
-
-    console.log({ res });
+    const result = await db.getAllAsync("SELECT * FROM lists");
   } catch (error) {
     console.log(error);
   }
@@ -72,13 +70,11 @@ export const readList = async (id: number) => {
     });
 
     const res = await db.getAllAsync("SELECT * FROM lists WHERE id = ?", [id]);
-    console.log({ res });
   } catch (error) {
     console.log(error);
   }
 };
 export const readLists = async (dispatch: Dispatch<Action<string>>) => {
-  // dispatch(setLoading(true));
   try {
     const db = await SQLite.openDatabaseAsync("listAppDb", {
       useNewConnection: true,
@@ -88,9 +84,6 @@ export const readLists = async (dispatch: Dispatch<Action<string>>) => {
     if (res !== null) {
       dispatch(addLists(res));
     }
-    return true;
-
-    //dispatch(setLoading(false));
   } catch (error) {
     console.log(error);
   }
@@ -124,7 +117,6 @@ export const insertItemData = async (
       "INSERT INTO items (name,  notes, timestamp, quantity, price, listId) VALUES (?, ?, ?, ?, ?, ?)",
       [name, notes, timestamp, quantity, price, listId]
     );
-    console.log({ res });
   } catch (error) {
     console.log(error);
   }
@@ -137,7 +129,6 @@ export const deleteItem = async (id: number) => {
     });
 
     const res = await db.runAsync("DELETE FROM items WHERE id = ?", [id]);
-    console.log({ res });
   } catch (error) {
     console.log(error);
   }
@@ -150,7 +141,6 @@ export const readItem = async (id: number) => {
     });
 
     const res = await db.getAllAsync("SELECT * FROM items WHERE id = ?", [id]);
-    console.log({ res });
   } catch (error) {
     console.log(error);
   }
@@ -189,7 +179,6 @@ export const updateItem = async (
       "UPDATE items SET name = coalesce(?, name), notes = coalesce(?, notes), quantity = coalesce(?, quantity), price = coalesce(?, price) WHERE id = ?",
       [name, notes, quantity, price, id]
     );
-    console.log({ res });
   } catch (error) {
     console.log(error);
   }

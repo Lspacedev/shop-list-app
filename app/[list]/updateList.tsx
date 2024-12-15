@@ -30,6 +30,7 @@ const UpdateList = () => {
     <ScrollView
       style={styles.container}
       contentContainerStyle={{ flex: 1, gap: 25 }}
+      keyboardShouldPersistTaps="always"
     >
       <Pressable onPress={goBack}>
         <EvilIcons
@@ -73,7 +74,8 @@ const UpdateList = () => {
 export default UpdateList;
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 50,
+    paddingHorizontal: 20,
+    backgroundColor: "#040406",
   },
   label: {
     color: "#BDBDBD",
@@ -94,7 +96,7 @@ const styles = StyleSheet.create({
     marginVertical: -5,
   },
   button: {
-    backgroundColor: "#2E4057",
+    backgroundColor: "#F97068",
     padding: 15,
     marginTop: 20,
     borderRadius: 5,

@@ -4,6 +4,7 @@ import Feather from "@expo/vector-icons/Feather";
 import store from "@/store/store";
 import { Provider } from "react-redux";
 import ListHeader from "@/components/ListHeader";
+
 export default function TabLayout() {
   return (
     <Provider store={store}>
@@ -16,7 +17,7 @@ export default function TabLayout() {
             headerTintColor: "white",
             headerShown: true,
             headerStyle: {
-              backgroundColor: "#1D1E2C",
+              backgroundColor: "#242A2E",
             },
           }}
         />
@@ -25,6 +26,7 @@ export default function TabLayout() {
           name="[list]/index"
           options={({ route }) => ({
             headerShown: true,
+
             header: () => <ListHeader id={route.params} />,
           })}
         />
@@ -35,7 +37,7 @@ export default function TabLayout() {
             headerTintColor: "white",
             headerShown: true,
             headerStyle: {
-              backgroundColor: "#1D1E2C",
+              backgroundColor: "#242A2E",
             },
           }}
         />
@@ -46,7 +48,7 @@ export default function TabLayout() {
             headerTintColor: "white",
             headerShown: true,
             headerStyle: {
-              backgroundColor: "#1D1E2C",
+              backgroundColor: "#242A2E",
             },
           }}
         />
@@ -57,7 +59,7 @@ export default function TabLayout() {
             headerTintColor: "white",
             headerShown: true,
             headerStyle: {
-              backgroundColor: "#1D1E2C",
+              backgroundColor: "#242A2E",
             },
           }}
         />

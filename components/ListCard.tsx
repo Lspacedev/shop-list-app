@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link, router } from "expo-router";
 import {
@@ -23,37 +23,72 @@ type ListType = {
   name: string;
   category: string;
   notes: string;
-  quantity: number;
   timestamp: string;
 };
 
 type ListProps = {
   list: ListType;
+  assets: number[];
+  selectList: (listId: number) => void;
+  selector: boolean;
+  setSelector: (bool: boolean) => void;
 };
 
-const ListCard: React.FC<ListProps> = ({ list }) => {
+const ListCard: React.FC<ListProps> = ({
+  list,
+  assets,
+  selectList,
+  selector,
+  setSelector,
+}) => {
   const [openMenu, setOpenMenu] = useState(false);
+  const [isSelected, setIsSelcted] = useState(false);
 
+  useEffect(() => {
+    if (assets.indexOf(list.id) !== -1) {
+      setIsSelcted(true);
+    } else {
+      setIsSelcted(false);
+    }
+  }, [assets]);
   const goToList = () => {
     router.push({
       pathname: "../[list]",
       params: { list: list.id },
     });
   };
-
   return (
     <Pressable
       style={{ flex: 1, justifyContent: "center", marginHorizontal: 10 }}
-      onPress={goToList}
+      onPress={selector ? () => selectList(list.id) : () => goToList()}
+      onLongPress={() => {
+        setSelector(true);
+        selectList(list.id);
+      }}
     >
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          isSelected && { borderWidth: 2, borderColor: "grey" },
+        ]}
+      >
         <View style={styles.name}>
-          <Text style={{ color: "#E5E7E6", fontSize: 20 }}>
+          <Text
+            style={[
+              { color: "#E5E7E6", fontSize: 20 },
+              isSelected && { color: "grey" },
+            ]}
+          >
             {list && list.name}
           </Text>
         </View>
         <View style={styles.category}>
-          <Text style={{ color: "#E5E7E6", fontSize: 20 }}>
+          <Text
+            style={[
+              { color: "#E5E7E6", fontSize: 20 },
+              isSelected && { color: "grey" },
+            ]}
+          >
             {list && list.category}
           </Text>
         </View>
@@ -74,8 +109,9 @@ const styles = StyleSheet.create({
     marginVertical: 2,
     paddingVertical: 5,
     paddingHorizontal: 15,
-    borderLeftColor: "#9C528B",
+    borderLeftColor: "#F97068",
     borderLeftWidth: 5,
+    borderRadius: 5,
   },
   name: {},
   category: {},
