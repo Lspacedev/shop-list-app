@@ -18,10 +18,22 @@ type ItemType = {
 type ListState = {
   lists: ListType[];
   items: ItemType[];
+  list: ListType;
+  item: ItemType;
 };
 const initialState: ListState = {
   lists: [],
   items: [],
+  list: { id: 0, name: "", category: "", notes: "", timestamp: "" },
+  item: {
+    id: 0,
+    name: "",
+    category: "",
+    notes: "",
+    quantity: 0,
+    timestamp: "",
+    price: 0,
+  },
 };
 const listSlice = createSlice({
   name: "lists",
@@ -36,7 +48,12 @@ const listSlice = createSlice({
     addLists: (state, action) => {
       state.lists = action.payload;
     },
-    addItem: (state, action) => {},
+    addList: (state, action) => {
+      state.list = action.payload;
+    },
+    addItem: (state, action) => {
+      state.item = action.payload;
+    },
     updateItem: (state, action) => {},
     addItems: (state, action) => {
       state.items = action.payload;
@@ -44,5 +61,6 @@ const listSlice = createSlice({
   },
 });
 
-export const { addToList, addItem, addLists, addItems } = listSlice.actions;
+export const { addToList, addItem, addLists, addItems, addList } =
+  listSlice.actions;
 export default listSlice.reducer;

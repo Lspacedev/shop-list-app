@@ -1,6 +1,6 @@
 import React from "react";
 import { Href, router } from "expo-router";
-import { Pressable } from "react-native";
+import { TouchableOpacity } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 };
 const FAB: React.FC<Props> = ({ urlText }) => {
   return (
-    <Pressable
+    <TouchableOpacity
       onPress={() => router.push(urlText)}
       style={{
         height: 50,
@@ -23,7 +23,7 @@ const FAB: React.FC<Props> = ({ urlText }) => {
       }}
     >
       <FontAwesome6 name="add" size={24} color="black" />
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 export default FAB;

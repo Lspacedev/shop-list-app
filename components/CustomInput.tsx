@@ -16,6 +16,8 @@ type CustomInputProps = TextInputProps & {
   name: string;
   error: string | Array<string>;
   handleChange: (value: InputType) => void;
+  length: number;
+  value?: string | null;
 };
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -23,9 +25,10 @@ const CustomInput: React.FC<CustomInputProps> = ({
   handleChange,
   error,
   onBlur,
+  length,
+  value,
 }) => {
   const [showPassword, setShowPassword] = useState<Boolean>(false);
-
   return (
     <View style={styles.inputContainer}>
       <TextInput
@@ -34,6 +37,8 @@ const CustomInput: React.FC<CustomInputProps> = ({
         placeholderTextColor={"#717171"}
         onChangeText={(text) => handleChange(text)}
         onBlur={onBlur}
+        maxLength={length}
+        value={value}
       />
 
       {typeof error === "string" && error !== "" && (

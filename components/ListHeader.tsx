@@ -12,8 +12,8 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
 } from "react-native";
-import { useState, useEffect } from "react";
-import { router, useLocalSearchParams } from "expo-router";
+import React, { useState, useCallback } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
@@ -22,7 +22,9 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "@/store/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
-
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import Octicons from "@expo/vector-icons/Octicons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 type ListType = {
   id: number;
   name: string;
@@ -35,10 +37,12 @@ type PressType = {
   itemId: number;
 };
 const ListHeader = (id: any) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [list, setList] = useState<ListType>();
 
   const [openMenu, setOpenMenu] = useState(false);
+  const [notes, setNotes] = useState(false);
+
   const listId = id.id.list;
   const lists: Array<ListType> = useSelector(
     (state: RootState) => state.lists?.lists
@@ -46,11 +50,16 @@ const ListHeader = (id: any) => {
 
   //const [list] = lists.filter((list) => list.id === Number(listId));
 
-  useEffect(() => {
-    const findList = lists.filter((list) => list.id === Number(listId));
-    const listObj: ListType = findList[0];
-    setList(listObj);
-  }, [listId]);
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        const findList = lists.filter((list) => list.id === Number(listId));
+
+        const listObj: ListType = findList[0];
+        setList(listObj);
+      })();
+    }, [listId])
+  );
 
   const goToLists = () => {
     router.push("/(tabs)");
@@ -79,6 +88,41 @@ const ListHeader = (id: any) => {
   };
   return (
     <SafeAreaView style={styles.container}>
+      <Modal
+        style={styles.menuModal}
+        animationType="fade"
+        transparent={true}
+        visible={notes}
+        onRequestClose={() => {
+          setNotes(false);
+        }}
+      >
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setNotes(false);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <View style={styles.notes}>
+                <View
+                  style={{
+                    width: "100%",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    gap: 5,
+                  }}
+                >
+                  <MaterialIcons name="notes" size={24} color="black" />
+                  <Text style={styles.notesHeader}>{list?.name}</Text>
+                </View>
+                <Text style={{ width: "100%" }}>{list?.notes}</Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
       <LinearGradient
         colors={["#505558", "#242A2E"]}
         style={{
@@ -92,9 +136,9 @@ const ListHeader = (id: any) => {
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       />
-      <Pressable onPress={goToLists} style={{ flex: 1 }}>
+      <TouchableOpacity onPress={goToLists} style={{ flex: 1 }}>
         <Ionicons name="arrow-back" size={24} color="white" />
-      </Pressable>
+      </TouchableOpacity>
       <Text style={styles.text}>{list?.name}</Text>
       <Modal
         style={styles.menuModal}
@@ -125,28 +169,45 @@ const ListHeader = (id: any) => {
                 >
                   <EvilIcons name="close" size={24} color="black" />
                 </Text>
-                <Pressable
+                <TouchableOpacity
                   style={styles.menuItem}
                   onPress={() => {
                     goToUpdate();
+                    setOpenMenu(false);
                   }}
                 >
+                  <Octicons name="pencil" size={24} color="black" />
                   <Text>Edit</Text>
-                </Pressable>
-                <Pressable
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => {
+                    setNotes(true);
+                    setOpenMenu(false);
+                  }}
+                >
+                  <MaterialIcons name="notes" size={24} color="black" />
+                  <Text>Notes</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                   style={styles.menuItem}
                   onPress={() => {
                     removeList();
                   }}
                 >
+                  <MaterialCommunityIcons
+                    name="delete-outline"
+                    size={24}
+                    color="black"
+                  />
                   <Text>Delete</Text>
-                </Pressable>
+                </TouchableOpacity>
               </View>
             </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-      <Pressable
+      <TouchableOpacity
         style={{ flex: 1 }}
         onPress={() => {
           setOpenMenu(true);
@@ -161,7 +222,7 @@ const ListHeader = (id: any) => {
             borderRadius: 50,
           }}
         />
-      </Pressable>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -185,6 +246,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  notesHeader: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
   menuModal: {
     flex: 1,
   },
@@ -192,7 +257,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     width: 200,
-    height: 100,
+    height: 220,
     backgroundColor: "white",
     borderRadius: 5,
     padding: 10,
@@ -208,6 +273,33 @@ const styles = StyleSheet.create({
     gap: 15,
     alignItems: "center",
     padding: 5,
+    paddingVertical: 20,
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+  },
+  notes: {
+    margin: 20,
+    width: 250,
+    height: 280,
+    backgroundColor: "white",
+    borderRadius: 5,
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+    alignItems: "center",
+    gap: 25,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
 export default ListHeader;

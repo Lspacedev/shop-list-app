@@ -20,6 +20,7 @@ import { router, useFocusEffect } from "expo-router";
 import { deleteList } from "@/db/db";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 type PressType = {
   listId: number;
   itemId: number;
@@ -96,25 +97,50 @@ const Lists = () => {
       setShow(false);
     }
   };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#040406" }}>
       <View style={{ flex: 1, height: Dimensions.get("window").height - 100 }}>
-        <FlatList
-          style={{ flex: 1, paddingVertical: 20 }}
-          contentContainerStyle={{ paddingBottom: 30 }}
-          data={lists}
-          renderItem={({ item }) => {
-            return (
-              <ListCard
-                list={item}
-                assets={assets}
-                selectList={selectList}
-                selector={selector}
-                setSelector={(bool) => setSelector(bool)}
-              />
-            );
-          }}
-        />
+        {lists && lists.length === 0 ? (
+          <View
+            style={{
+              flex: 1,
+              height: Dimensions.get("window").height - 100,
+              backgroundColor: "#040406",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <FontAwesome name="list" size={150} color="#242A2E" />
+            <Text
+              style={{
+                color: "#242A2E",
+                fontSize: 30,
+                fontWeight: "600",
+                textAlign: "center",
+              }}
+            >
+              Add List
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            style={{ flex: 1, paddingVertical: 20 }}
+            contentContainerStyle={{ paddingBottom: 30 }}
+            data={lists}
+            renderItem={({ item }) => {
+              return (
+                <ListCard
+                  list={item}
+                  assets={assets}
+                  selectList={selectList}
+                  selector={selector}
+                  setSelector={(bool) => setSelector(bool)}
+                />
+              );
+            }}
+          />
+        )}
       </View>
 
       {show ? (

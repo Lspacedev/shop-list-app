@@ -5,6 +5,9 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
+  Touchable,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import React, { useState } from "react";
 import CustomInput from "@/components/CustomInput";
@@ -28,12 +31,18 @@ const addItem = () => {
     });
   };
   const addItem = async () => {
-    setLoading(true);
-
     if (name === "" || notes === "" || quantity === "" || price === "") {
       Alert.alert("Fields cannot be empty");
-      setLoading(false);
     } else {
+      if (isNaN(Number(quantity))) {
+        Alert.alert("Quantity must be a number.");
+        return;
+      }
+      if (isNaN(Number(price))) {
+        Alert.alert("Price must be a number.");
+        return;
+      }
+      setLoading(true);
       const timestamp = Date.now().toString();
       const qty = Number(quantity) ?? 0;
       const prc = Number(price) ?? 0;
@@ -43,7 +52,8 @@ const addItem = () => {
       router.back();
     }
   };
-  if (loading) return <ActivityIndicator />;
+  if (loading)
+    return <View style={{ flex: 1, backgroundColor: "#040406" }}></View>;
   return (
     <ScrollView
       style={styles.container}
@@ -66,32 +76,36 @@ const addItem = () => {
         name="Name"
         handleChange={(text: string) => setName(text)}
         error={""}
+        length={12}
       />
 
       <CustomInput
         name="Notes"
         handleChange={(text: string) => setNotes(text)}
         error={""}
+        length={25}
       />
       <CustomInput
         name="Quantity"
         handleChange={(text: string) => setQuantity(text)}
         error={""}
+        length={3}
       />
       <CustomInput
         name="Price"
         handleChange={(text: string) => setPrice(text)}
         error={""}
+        length={5}
       />
 
-      <Pressable
+      <TouchableOpacity
         style={styles.button}
         onPress={() => {
           addItem();
         }}
       >
         <Text style={styles.buttonText}>Add</Text>
-      </Pressable>
+      </TouchableOpacity>
     </ScrollView>
   );
 };

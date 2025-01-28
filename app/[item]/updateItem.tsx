@@ -5,42 +5,55 @@ import {
   StyleSheet,
   ActivityIndicator,
   Alert,
+  View,
+  TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import CustomInput from "@/components/CustomInput";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
-import { router, useLocalSearchParams } from "expo-router";
-import { updateItem } from "@/db/db";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { updateItem, readItem } from "@/db/db";
+import type { RootState } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
+
 //import { addItem } from "@/reducers/listReducer";
 const addItem = () => {
   const { item } = useLocalSearchParams();
+  const itemObj = useSelector((state: RootState) => state.lists.item);
 
-  const [name, setName] = useState<string | null>("");
-  const [notes, setNotes] = useState<string | null>("");
-  const [quantity, setQuantity] = useState<string | null>("");
-  const [price, setPrice] = useState<string | null>("");
-  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState(itemObj.name);
+  const [notes, setNotes] = useState(itemObj.notes);
+  const [quantity, setQuantity] = useState(itemObj.quantity.toString());
+  const [price, setPrice] = useState(itemObj.price.toString());
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        await readItem(Number(item), dispatch);
+        setName(itemObj.name);
+        setNotes(itemObj.notes);
+        setPrice(itemObj.price.toString());
+        setQuantity(itemObj.quantity.toString());
+        setLoading(false);
+      })();
+    }, [item, loading])
+  );
 
   const goBack = () => {
     router.back();
   };
-  const addItem = async () => {
+  const update = async () => {
     setLoading(true);
 
-    // if (
-    //   name !== "" ||
-    //   category !== "" ||
-    //   notes !== "" ||
-    //   quantity !== "" ||
-    //   price !== ""
-    // ) {
-    //   Alert.alert("Fields cannot be empty");
-    //   setLoading(false);
-    // } else {
+    if (name === "" || notes === "" || quantity === "" || price === "") {
+      Alert.alert("Fields cannot be empty");
+      setLoading(false);
+    }
     const timestamp = Date.now().toString();
     const qty = Number(quantity) ?? null;
     const prc = Number(price) ?? null;
-    console.log(name === "" ? null : name);
 
     await updateItem(
       name === "" ? null : name,
@@ -54,7 +67,8 @@ const addItem = () => {
     router.back();
     //}
   };
-  if (loading) return <ActivityIndicator />;
+  if (loading)
+    return <View style={{ flex: 1, backgroundColor: "#040406" }}></View>;
   return (
     <ScrollView
       style={styles.container}
@@ -77,32 +91,40 @@ const addItem = () => {
         name="Name"
         handleChange={(text: string) => setName(text)}
         error={""}
+        length={12}
+        value={name}
       />
 
       <CustomInput
         name="Notes"
         handleChange={(text: string) => setNotes(text)}
         error={""}
+        length={25}
+        value={notes}
       />
       <CustomInput
         name="Quantity"
         handleChange={(text: string) => setQuantity(text)}
         error={""}
+        length={3}
+        value={quantity}
       />
       <CustomInput
         name="Price"
         handleChange={(text: string) => setPrice(text)}
         error={""}
+        length={5}
+        value={price}
       />
 
-      <Pressable
+      <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          addItem();
+          update();
         }}
       >
         <Text style={styles.buttonText}>Submit</Text>
-      </Pressable>
+      </TouchableOpacity>
     </ScrollView>
   );
 };

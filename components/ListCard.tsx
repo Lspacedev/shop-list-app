@@ -58,7 +58,7 @@ const ListCard: React.FC<ListProps> = ({
     });
   };
   return (
-    <Pressable
+    <TouchableOpacity
       style={{ flex: 1, justifyContent: "center", marginHorizontal: 10 }}
       onPress={selector ? () => selectList(list.id) : () => goToList()}
       onLongPress={() => {
@@ -93,7 +93,7 @@ const ListCard: React.FC<ListProps> = ({
           </Text>
         </View>
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 };
 export default ListCard;

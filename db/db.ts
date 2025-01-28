@@ -1,5 +1,5 @@
 import * as SQLite from "expo-sqlite";
-import { addLists, addItems } from "@/reducers/listReducer";
+import { addLists, addItems, addItem, addList } from "@/reducers/listReducer";
 import { Action, Dispatch } from "@reduxjs/toolkit";
 
 export const initialiseDb = async () => {
@@ -16,7 +16,6 @@ export const initialiseDb = async () => {
     FOREIGN KEY (listId) REFERENCES lists(id) ON DELETE CASCADE);
       `
       );
-      console.log({ res });
     });
   } catch (error) {
     console.log(error);
@@ -63,13 +62,19 @@ export const updateList = async (
     console.log(error);
   }
 };
-export const readList = async (id: number) => {
+export const readList = async (
+  id: number,
+  dispatch: Dispatch<Action<string>>
+) => {
   try {
     const db = await SQLite.openDatabaseAsync("listAppDb", {
       useNewConnection: true,
     });
 
     const res = await db.getAllAsync("SELECT * FROM lists WHERE id = ?", [id]);
+    if (res !== null) {
+      dispatch(addList(res[0]));
+    }
   } catch (error) {
     console.log(error);
   }
@@ -134,13 +139,19 @@ export const deleteItem = async (id: number) => {
   }
 };
 
-export const readItem = async (id: number) => {
+export const readItem = async (
+  id: number,
+  dispatch: Dispatch<Action<string>>
+) => {
   try {
     const db = await SQLite.openDatabaseAsync("listAppDb", {
       useNewConnection: true,
     });
 
     const res = await db.getAllAsync("SELECT * FROM items WHERE id = ?", [id]);
+    if (res !== null) {
+      dispatch(addItem(res[0]));
+    }
   } catch (error) {
     console.log(error);
   }
