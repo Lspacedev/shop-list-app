@@ -26,7 +26,6 @@ const addList = () => {
     router.push("/(tabs)");
   };
   const addList = async () => {
-    console.log("press");
     setLoading(true);
 
     if (name === "" || category === "" || notes === "") {
@@ -63,16 +62,19 @@ const addList = () => {
         name="Name"
         handleChange={(text: string) => setName(text)}
         error={""}
+        length={12}
       />
       <CustomInput
         name="Category"
         handleChange={(text: string) => setCategory(text)}
         error={""}
+        length={10}
       />
       <CustomInput
         name="Notes"
         handleChange={(text: string) => setNotes(text)}
         error={""}
+        length={50}
       />
 
       <TouchableOpacity style={styles.button} onPress={addList}>

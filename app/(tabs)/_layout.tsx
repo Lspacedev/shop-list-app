@@ -92,9 +92,6 @@ export default function TabLayout() {
               />
             );
           },
-          tabBarStyle: {
-            borderTopColor: "black",
-          },
         }}
       />
     </Tabs>

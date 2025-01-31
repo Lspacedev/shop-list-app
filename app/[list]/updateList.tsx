@@ -1,23 +1,51 @@
-import { ScrollView, Text, Pressable, StyleSheet, Alert } from "react-native";
-import React, { useState } from "react";
+import {
+  ScrollView,
+  Text,
+  Pressable,
+  StyleSheet,
+  Alert,
+  View,
+  Touchable,
+  TouchableOpacity,
+} from "react-native";
+import React, { useState, useCallback } from "react";
 import CustomInput from "@/components/CustomInput";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
-import { router, useLocalSearchParams } from "expo-router";
-import { updateList } from "@/db/db";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { updateList, readList } from "@/db/db";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/store/store";
+
 const UpdateList = () => {
   const { list } = useLocalSearchParams();
+  const listObj = useSelector((state: RootState) => state.lists.list);
 
-  const [name, setName] = useState<string | null>("");
-  const [category, setCategory] = useState<string | null>("");
-  const [notes, setNotes] = useState<string | null>("");
-  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
+  const [notes, setNotes] = useState("");
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  useFocusEffect(
+    useCallback(() => {
+      (async () => {
+        await readList(Number(list), dispatch);
+        setName(listObj.name);
+        setCategory(listObj.category);
+        setNotes(listObj.notes);
+
+        setLoading(false);
+      })();
+    }, [list, readList, dispatch, loading])
+  );
 
   const goBack = () => {
     router.push("/(tabs)");
   };
   const update = async () => {
+    if (name === "" || notes === "" || category === "") {
+      Alert.alert("Fields cannot be empty");
+    }
     setLoading(true);
-
     await updateList(
       name === "" ? null : name,
       category === "" ? null : category,
@@ -26,6 +54,8 @@ const UpdateList = () => {
     );
     router.push("/(tabs)");
   };
+  if (loading)
+    return <View style={{ flex: 1, backgroundColor: "#040406" }}></View>;
   return (
     <ScrollView
       style={styles.container}
@@ -48,29 +78,36 @@ const UpdateList = () => {
         name="Name"
         handleChange={(text: string) => setName(text)}
         error={""}
+        length={12}
+        value={name}
       />
       <CustomInput
         name="Category"
         handleChange={(text: string) => setCategory(text)}
         error={""}
+        length={10}
+        value={category}
       />
       <CustomInput
         name="Notes"
         handleChange={(text: string) => setNotes(text)}
         error={""}
+        length={50}
+        value={notes}
       />
 
-      <Pressable
+      <TouchableOpacity
         style={styles.button}
         onPress={() => {
           update();
         }}
       >
         <Text style={styles.buttonText}>Submit</Text>
-      </Pressable>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
+
 export default UpdateList;
 const styles = StyleSheet.create({
   container: {

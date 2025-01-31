@@ -6,6 +6,7 @@ import {
   FlatList,
   Dimensions,
   Pressable,
+  TouchableOpacity,
   StyleSheet,
 } from "react-native";
 import SearchBar from "@/components/Searchbar";
@@ -30,6 +31,8 @@ const Search = () => {
   const dispatch = useDispatch();
 
   const [results, setResults] = useState<ListType[]>([]);
+  const [noResults, setNoResults] = useState(false);
+
   useFocusEffect(
     useCallback(() => {
       readLists(dispatch);
@@ -40,10 +43,15 @@ const Search = () => {
       const filtered = lists.filter((list) =>
         list.name.includes(text as string)
       );
-      console.log({ filtered, lists, text });
-      setResults(filtered);
+      if (filtered.length !== 0) {
+        setResults(filtered);
+        setNoResults(false);
+      } else {
+        setNoResults(true);
+      }
     } else {
       setResults([]);
+      setNoResults(false);
     }
   }, [text]);
   const goToList = (id: number) => {
@@ -56,36 +64,44 @@ const Search = () => {
     <View style={{ flex: 1, backgroundColor: "#040406", padding: 5 }}>
       <SearchBar name="Find lists" onChange={setText} />
       <View style={{ flex: 1, height: Dimensions.get("window").height - 100 }}>
-        <FlatList
-          style={{ flex: 1, paddingVertical: 20 }}
-          contentContainerStyle={{ paddingBottom: 30 }}
-          data={results}
-          renderItem={({ item }) => {
-            return (
-              <Pressable
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  marginHorizontal: 10,
-                }}
-                onPress={() => goToList(item.id)}
-              >
-                <View style={[styles.container]}>
-                  <View style={styles.name}>
-                    <Text style={[{ color: "#E5E7E6", fontSize: 20 }]}>
-                      {item.name}
-                    </Text>
+        {noResults ? (
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <Text style={{ color: "whitesmoke" }}>No lists found</Text>
+          </View>
+        ) : (
+          <FlatList
+            style={{ flex: 1, paddingVertical: 20 }}
+            contentContainerStyle={{ paddingBottom: 30 }}
+            data={results}
+            renderItem={({ item }) => {
+              return (
+                <TouchableOpacity
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    marginHorizontal: 10,
+                  }}
+                  onPress={() => goToList(item.id)}
+                >
+                  <View style={[styles.container]}>
+                    <View style={styles.name}>
+                      <Text style={[{ color: "#E5E7E6", fontSize: 20 }]}>
+                        {item.name}
+                      </Text>
+                    </View>
+                    <View style={styles.category}>
+                      <Text style={[{ color: "#E5E7E6", fontSize: 20 }]}>
+                        {item.category}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.category}>
-                    <Text style={[{ color: "#E5E7E6", fontSize: 20 }]}>
-                      {item.category}
-                    </Text>
-                  </View>
-                </View>
-              </Pressable>
-            );
-          }}
-        />
+                </TouchableOpacity>
+              );
+            }}
+          />
+        )}
       </View>
     </View>
   );

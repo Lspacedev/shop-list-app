@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, router } from "expo-router";
-import { View, Text, Dimensions, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -114,7 +121,7 @@ const ItemCard: React.FC<ItemProps> = ({
           </Text>
         </View>
         <View
-          style={{ flex: 2, flexDirection: "row", justifyContent: "center" }}
+          style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
         >
           <Text
             style={[
@@ -128,9 +135,9 @@ const ItemCard: React.FC<ItemProps> = ({
             {`R${item.price}`}
           </Text>
         </View>
-        <Pressable
+        <TouchableOpacity
           onPress={isPressed ? () => removeItem() : () => goToUpdate()}
-          style={{ flex: 2 }}
+          style={{ flex: 1 }}
         >
           {isPressed ? (
             <EvilIcons
@@ -155,7 +162,7 @@ const ItemCard: React.FC<ItemProps> = ({
               }}
             />
           )}
-        </Pressable>
+        </TouchableOpacity>
       </View>
       <View style={{ flex: 2 }}>
         <Text
@@ -180,9 +187,9 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 70,
     marginHorizontal: 10,
-    marginVertical: 2,
+    marginVertical: 3,
     paddingVertical: 5,
-    paddingHorizontal: 15,
+    paddingHorizontal: 2,
     borderRadius: 5,
   },
 
