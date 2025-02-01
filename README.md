@@ -68,3 +68,4 @@ In the output, you'll find options to open the app in a
 - React Native
 - Expo
 - SQLite
+- Redux
